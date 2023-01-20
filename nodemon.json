@@ -1,6 +1,6 @@
 {
   "watch": ["src"],
   "ignore": ["node_modules"],
-  "exec": "ts-node ./src/index.js",
+  "exec": "ts-node ./src/app.ts",
   "ext": ".ts, .js"
 }
