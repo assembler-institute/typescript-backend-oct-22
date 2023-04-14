@@ -1,13 +1,14 @@
 {
   "name": "nodejs_typescript",
-  "packageManager": "yarn@3.2.4",
   "version": "1.0.0",
   "description": "",
-  "main": "build/index.js",
-    "scripts": {
+  "main": "dist/index.js",
+  "scripts": {
     "dev": "nodemon",
-    "build": "rimraf ./build && tsc",
-    "start": "npm run build && node ./build/index.js"
+    "build": "rimraf dist && tsc",
+    "start": "node ./dist/index.js",
+    "prestart": "npm run build",
+    "typecheck": "tsc --noEmit"
   },
   "author": "Jose Valenzuela",
   "license": "MIT",
@@ -24,11 +25,10 @@
     "joi": "^17.3.0",
     "mongoose": "^5.11.6",
     "morgan": "^1.10.0",
-    "rimraf": "^3.0.2"
+    "rimraf": "^5.0.0"
   },
   "dependencies": {
     "nodemon": "^2.0.6",
-    "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   }
 }
