@@ -1,7 +1,7 @@
 import { Router } from "express";
 const PostRouter: Router = Router();
 
-const { postController } = require('../controllers');
+const { postController } = require('../Controllers');
 
 //create post
 PostRouter.post("/", postController.createPost);

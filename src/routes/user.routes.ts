@@ -1,7 +1,7 @@
 import { Router } from "express";
 const UserRouter: Router = Router();
 
-const { userController } = require('../controllers');
+const { userController } = require('../Controllers');
 
 //create user
 UserRouter.post("/", userController.createUser);
