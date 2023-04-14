@@ -30,5 +30,6 @@
   "dependencies": {
     "nodemon": "^2.0.6",
     "typescript": "^5.0.4"
+    
   }
 }
