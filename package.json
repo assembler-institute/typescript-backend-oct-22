@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "build/index.js",
-  "scripts": {
-    "start": "npm run build && node ./build/index.js",
-    "dev": "nodemon"
+    "scripts": {
+    "dev": "nodemon",
+    "build": "rimraf ./build && tsc",
+    "start": "npm run build && node ./build/index.js"
   },
   "author": "Jose Valenzuela",
   "license": "MIT",
