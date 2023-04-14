@@ -33,8 +33,7 @@ var UserSchema = new mongoose_1.Schema({
         required: true,
         unique: true,
         lowercase: true,
-        min: 6,
-        max: 255,
+        max: 35,
         match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
     },
     name: {

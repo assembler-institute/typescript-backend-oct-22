@@ -1,11 +1,12 @@
 "use strict";
 var dotenv = require('dotenv');
 dotenv.config();
-var _a = process.env, DB_CONNECT = _a.DB_CONNECT, SERVER_PORT = _a.SERVER_PORT;
+var _a = process.env, DB_CONNECT = _a.DB_CONNECT, PORT = _a.PORT;
 var CONFIG = {
     development: {
         app: {
-            port: SERVER_PORT || 'http://localhost:4000'
+            port: PORT || 'http://localhost:4000',
+            frontend: 'http://localhost:5173'
         },
         db: {
             url: DB_CONNECT
@@ -13,7 +14,8 @@ var CONFIG = {
     },
     production: {
         app: {
-            port: SERVER_PORT || 'http://localhost:4000'
+            port: PORT || 'http://localhost:4000',
+            frontend: 'http://localhost:5173'
         },
         db: {
             url: DB_CONNECT

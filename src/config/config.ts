@@ -4,13 +4,13 @@ dotenv.config();
 
 const {
   DB_CONNECT,
-  SERVER_PORT
+  PORT
 } = process.env;
 
 const CONFIG = {
   development: {
     app: {
-      port: SERVER_PORT || 'http://localhost:4000',
+      port: PORT || 'http://localhost:4000',
       frontend: 'http://localhost:5173'
     },
     db: {
@@ -19,7 +19,7 @@ const CONFIG = {
   },
   production: {
     app: {
-      port: SERVER_PORT || 'http://localhost:4000',
+      port: PORT || 'http://localhost:4000',
       frontend: 'http://localhost:5173'
     },
     db: {

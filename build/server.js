@@ -14,9 +14,9 @@ app.use(json({
     limit: '50mb'
 }));
 app.use(cors({
-    origin: CONFIG.development.app.url
+    origin: CONFIG.development.app.frontend
 }));
-app.use('/user', function () { return console.log('inside user route'); }, routes_1.UserRouter);
+app.use('/user', routes_1.UserRouter);
 app.use('/post', routes_1.PostRouter);
 // 404 response
 app.use(function (error, res, next) {

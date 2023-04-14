@@ -23,9 +23,12 @@
     "http-errors": "^1.8.0",
     "joi": "^17.3.0",
     "mongoose": "^5.11.6",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "rimraf": "^3.0.2"
   },
   "dependencies": {
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
   }
 }

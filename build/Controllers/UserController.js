@@ -42,6 +42,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var User = require("../Models/User").User;
 var http_errors_1 = __importDefault(require("http-errors"));
 var UserValidation_1 = require("../Validations/UserValidation");
+/**
+ * Update user
+ * @param userId
+ * @param userModelValidation
+ */
 var processUpdateUser = function (userId, userModelValidation) { return __awaiter(void 0, void 0, void 0, function () {
     var updateUser_1, error_1;
     return __generator(this, function (_a) {
@@ -67,6 +72,10 @@ var processUpdateUser = function (userId, userModelValidation) { return __awaite
         }
     });
 }); };
+/**
+ * add new user
+ * @param userModelValidation
+ */
 var addUser = function (userModelValidation) { return __awaiter(void 0, void 0, void 0, function () {
     var user, savedUser, error_2;
     return __generator(this, function (_a) {
@@ -78,7 +87,6 @@ var addUser = function (userModelValidation) { return __awaiter(void 0, void 0, 
                     name: userModelValidation.name,
                     surname: userModelValidation.surname,
                 });
-                console.log(user);
                 return [4 /*yield*/, user.save()];
             case 1:
                 savedUser = _a.sent();
@@ -91,44 +99,41 @@ var addUser = function (userModelValidation) { return __awaiter(void 0, void 0, 
     });
 }); };
 var createUser = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var userModelValidation, isUsernameAvailable, newUser, error_3;
+    var userModelValidation, isUsernameAvailable, savedUser, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log('entro');
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 5, , 6]);
+                _a.trys.push([0, 4, , 5]);
                 return [4 /*yield*/, UserValidation_1.UserValidation.validateAsync(req.body)];
-            case 2:
+            case 1:
                 userModelValidation = _a.sent();
-                console.log(userModelValidation);
-                if (!userModelValidation) {
+                if (!userModelValidation.username) {
                     return [2 /*return*/, "Operation failed, invalid details provided."];
                 }
                 return [4 /*yield*/, User.findOne({
                         username: userModelValidation.username,
                     })];
-            case 3:
+            case 2:
                 isUsernameAvailable = _a.sent();
+                console.log(isUsernameAvailable);
                 if (isUsernameAvailable) {
-                    return [2 /*return*/, res.status(404).json({
-                            message: "Username ".concat(userModelValidation.username, " not available"),
+                    return [2 /*return*/, res.status(400).json({
+                            message: "Username already exists.",
                         })];
                 }
                 return [4 /*yield*/, addUser(userModelValidation)];
-            case 4:
-                newUser = _a.sent();
-                if (newUser) {
-                    return [2 /*return*/, res.status(201).json({
-                            message: "User created successfully",
-                            data: newUser,
-                        })];
+            case 3:
+                savedUser = _a.sent();
+                if (!savedUser) {
+                    return [2 /*return*/, next(res.status(400).json({
+                            message: "Operation failed, invalid details provided.",
+                        }))];
                 }
-                return [2 /*return*/, next(res.status(400).json({
-                        message: "Invalid details provided.",
-                    }))];
-            case 5:
+                return [2 /*return*/, res.status(200).json({
+                        message: "User created successfully.",
+                        data: savedUser,
+                    })];
+            case 4:
                 error_3 = _a.sent();
                 if (error_3 instanceof Error) {
                     return [2 /*return*/, next(res.status(400).json({
@@ -136,8 +141,8 @@ var createUser = function (req, res, next) { return __awaiter(void 0, void 0, vo
                         }))];
                 }
                 next(error_3);
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
