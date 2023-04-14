@@ -11,8 +11,8 @@ const app = express();
 connect().then(async function onServerInit() {
   console.log('DB connected');
   // seeders
-  // await seedUsers();
-  // await seedPosts();
+  await seedUsers();
+  await seedPosts();
 })
 
 app.use('/api', routes);
