@@ -10,12 +10,17 @@ const PostSchema: Schema = new Schema(
       type: String,
       required: true,
     },
+    image: {
+      type: String,
+      required: true,
+    },
     vote: {
       type: Number,
       required: true,
     },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
+    author: {
+      type: String,
+      required: true,
       ref: "User",
     },
   },
@@ -23,4 +28,5 @@ const PostSchema: Schema = new Schema(
   { timestamps: true }
 );
 const Post = mongoose.model<Ipost>("Post", PostSchema);
-export default Post;
+
+module.exports = Post;

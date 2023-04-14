@@ -1,8 +1,7 @@
-import { Request, Response, NextFunction } from "express";
-import Post from "../Models/User";
-import createError from "http-errors";
-import User from "../Models/User";
+const { User } = require("../Models/User");
 import { Iuser } from "../Types/Iuser";
+import createError from "http-errors";
+import { Request, Response, NextFunction } from "express";
 import {
   UserValidation,
   UserIdValidation,
@@ -53,13 +52,7 @@ const addUser = async (userModelValidation: Iuser) => {
   }
 };
 
-/**
- * Create new user
- * @param req
- * @param res
- * @param next
- */
-export const createUser = async (
+const createUser = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -69,35 +62,35 @@ export const createUser = async (
       req.body
     );
 
-    if (!userModelValidation) {
-      return next(
-        new createError.BadRequest(
-          "Operation failed, invalid details provided."
-        )
-      );
-    } else {
-      const isUsernameAvailable = await User.findOne({
-        username: userModelValidation.username,
+    if (!userModelValidation.username) { return "Operation failed, invalid details provided." }
+
+    const isUsernameAvailable = await User.findOne({
+      username: userModelValidation.username,
+    });
+
+    console.log(isUsernameAvailable);
+
+
+    if (isUsernameAvailable) {
+      return res.status(400).json({
+        message: "Username already exists.",
       });
-      if (isUsernameAvailable) {
-        res.status(404).json({
-          message: `Username ${userModelValidation.username} not available`,
-        });
-      } else {
-        const newUser = await addUser(userModelValidation);
-        if (newUser) {
-          res.status(201).json({
-            newUser,
-          });
-        } else {
-          return next(
-            res.status(400).json({
-              message: "Invalid details provided.",
-            })
-          );
-        }
-      }
     }
+
+    const savedUser = await addUser(userModelValidation);
+
+    if (!savedUser) {
+      return next(
+        res.status(400).json({
+          message: "Operation failed, invalid details provided.",
+        })
+      );
+    }
+
+    return res.status(200).json({
+      message: "User created successfully.",
+      data: savedUser,
+    });
   } catch (error) {
     if (error instanceof Error) {
       return next(
@@ -110,67 +103,7 @@ export const createUser = async (
   }
 };
 
-/**
- * Upadet user
- * @param req
- * @param res
- * @param next
- */
-export const updateUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const userModelValidation: Iuser = await UserValidation.validateAsync(
-      req.body
-    );
-
-    if (!userModelValidation) {
-      return next(
-        new createError.BadRequest(
-          "Operation failed, invalid details provided."
-        )
-      );
-    } else {
-      const isUsernameValid = await User.findOne({
-        username: userModelValidation.username,
-      });
-      if (!isUsernameValid) {
-        res.status(404).json({
-          message: `Username ${userModelValidation.username} not valid`,
-        });
-      } else {
-        const updatedUser = await processUpdateUser(
-          isUsernameValid._id,
-          userModelValidation
-        );
-        if (updatedUser) {
-          res.status(201).json({
-            updatedUser,
-          });
-        } else {
-          return next(
-            res.status(400).json({
-              message: "Invalid details provided.",
-            })
-          );
-        }
-      }
-    }
-  } catch (error) {
-    if (error instanceof Error) {
-      return next(
-        res.status(400).json({
-          message: "Invalid details provided.",
-        })
-      );
-    }
-    next(error);
-  }
-};
-
-export const getUser = async (
+const getUser = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -181,23 +114,79 @@ export const getUser = async (
     );
 
     if (!userIdValidation) {
+      res.status(400).json({
+        message: "Operation failed, invalid details provided.",
+      });
+    }
+
+    const userDetails = await User.findById(userIdValidation);
+    console.log(userDetails);
+
+
+    if (!userDetails) {
+      res.status(404).json({
+        message: `User id not available`,
+      });
+    }
+
+    return res.status(200).json({
+      message: "User details",
+      data: userDetails,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(400).json({
+        message: "Invalid details provided.",
+      });
+    }
+    next(error);
+  }
+};
+
+const updateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userModelValidation: Iuser = await UserValidation.validateAsync(
+      req.body
+    );
+
+    if (!userModelValidation) {
       return next(
         new createError.BadRequest(
           "Operation failed, invalid details provided."
         )
       );
-    } else {
-      const userDetails = await User.findById(userIdValidation);
-      if (!userDetails) {
-        res.status(404).json({
-          message: `User id not available`,
-        });
-      } else {
-        res.status(200).json({
-          userDetails,
-        });
-      }
     }
+
+    const isUsernameValid = await User.findOne({
+      username: userModelValidation.username,
+    });
+
+    if (!isUsernameValid) {
+      return res.status(404).json({
+        message: `Username ${userModelValidation.username} not valid`,
+      });
+    }
+
+    const updatedUser = await processUpdateUser(
+      isUsernameValid._id,
+      userModelValidation
+    );
+
+    if (updatedUser) {
+      return res.status(201).json({
+        updatedUser,
+      });
+    }
+
+    return next(
+      res.status(400).json({
+        message: "Invalid details provided.",
+      })
+    );
   } catch (error) {
     if (error instanceof Error) {
       return next(
@@ -208,4 +197,10 @@ export const getUser = async (
     }
     next(error);
   }
+};
+
+module.exports = {
+  createUser,
+  updateUser,
+  getUser,
 };

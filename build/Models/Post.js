@@ -33,14 +33,19 @@ var PostSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
+    image: {
+        type: String,
+        required: true,
+    },
     vote: {
         type: Number,
         required: true,
     },
-    user: {
-        type: mongoose_1.default.Schema.Types.ObjectId,
+    author: {
+        type: String,
+        required: true,
         ref: "User",
     },
 }, { timestamps: true });
 var Post = mongoose_1.default.model("Post", PostSchema);
-exports.default = Post;
+module.exports = Post;

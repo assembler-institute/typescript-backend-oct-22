@@ -39,22 +39,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUser = exports.updateUser = exports.createUser = void 0;
+var User = require("../Models/User").User;
 var http_errors_1 = __importDefault(require("http-errors"));
-var User_1 = __importDefault(require("../Models/User"));
 var UserValidation_1 = require("../Validations/UserValidation");
-/**
- * Update user
- * @param userId
- * @param userModelValidation
- */
 var processUpdateUser = function (userId, userModelValidation) { return __awaiter(void 0, void 0, void 0, function () {
     var updateUser_1, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, User_1.default.updateOne({
+                return [4 /*yield*/, User.updateOne({
                         _id: userId,
                     }, {
                         $set: {
@@ -73,21 +67,18 @@ var processUpdateUser = function (userId, userModelValidation) { return __awaite
         }
     });
 }); };
-/**
- * add new user
- * @param userModelValidation
- */
 var addUser = function (userModelValidation) { return __awaiter(void 0, void 0, void 0, function () {
     var user, savedUser, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                user = new User_1.default({
+                user = new User({
                     username: userModelValidation.username,
                     name: userModelValidation.name,
                     surname: userModelValidation.surname,
                 });
+                console.log(user);
                 return [4 /*yield*/, user.save()];
             case 1:
                 savedUser = _a.sent();
@@ -99,49 +90,45 @@ var addUser = function (userModelValidation) { return __awaiter(void 0, void 0, 
         }
     });
 }); };
-/**
- * Create new user
- * @param req
- * @param res
- * @param next
- */
 var createUser = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var userModelValidation, isUsernameAvailable, newUser, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 7, , 8]);
-                return [4 /*yield*/, UserValidation_1.UserValidation.validateAsync(req.body)];
+                console.log('entro');
+                _a.label = 1;
             case 1:
+                _a.trys.push([1, 5, , 6]);
+                return [4 /*yield*/, UserValidation_1.UserValidation.validateAsync(req.body)];
+            case 2:
                 userModelValidation = _a.sent();
-                if (!!userModelValidation) return [3 /*break*/, 2];
-                return [2 /*return*/, next(new http_errors_1.default.BadRequest("Operation failed, invalid details provided."))];
-            case 2: return [4 /*yield*/, User_1.default.findOne({
-                    username: userModelValidation.username,
-                })];
+                console.log(userModelValidation);
+                if (!userModelValidation) {
+                    return [2 /*return*/, "Operation failed, invalid details provided."];
+                }
+                return [4 /*yield*/, User.findOne({
+                        username: userModelValidation.username,
+                    })];
             case 3:
                 isUsernameAvailable = _a.sent();
-                if (!isUsernameAvailable) return [3 /*break*/, 4];
-                res.status(404).json({
-                    message: "Username ".concat(userModelValidation.username, " not available"),
-                });
-                return [3 /*break*/, 6];
-            case 4: return [4 /*yield*/, addUser(userModelValidation)];
-            case 5:
+                if (isUsernameAvailable) {
+                    return [2 /*return*/, res.status(404).json({
+                            message: "Username ".concat(userModelValidation.username, " not available"),
+                        })];
+                }
+                return [4 /*yield*/, addUser(userModelValidation)];
+            case 4:
                 newUser = _a.sent();
                 if (newUser) {
-                    res.status(201).json({
-                        newUser: newUser,
-                    });
+                    return [2 /*return*/, res.status(201).json({
+                            message: "User created successfully",
+                            data: newUser,
+                        })];
                 }
-                else {
-                    return [2 /*return*/, next(res.status(400).json({
-                            message: "Invalid details provided.",
-                        }))];
-                }
-                _a.label = 6;
-            case 6: return [3 /*break*/, 8];
-            case 7:
+                return [2 /*return*/, next(res.status(400).json({
+                        message: "Invalid details provided.",
+                    }))];
+            case 5:
                 error_3 = _a.sent();
                 if (error_3 instanceof Error) {
                     return [2 /*return*/, next(res.status(400).json({
@@ -149,95 +136,85 @@ var createUser = function (req, res, next) { return __awaiter(void 0, void 0, vo
                         }))];
                 }
                 next(error_3);
-                return [3 /*break*/, 8];
-            case 8: return [2 /*return*/];
-        }
-    });
-}); };
-exports.createUser = createUser;
-/**
- * Upadet user
- * @param req
- * @param res
- * @param next
- */
-var updateUser = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var userModelValidation, isUsernameValid, updatedUser, error_4;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 7, , 8]);
-                return [4 /*yield*/, UserValidation_1.UserValidation.validateAsync(req.body)];
-            case 1:
-                userModelValidation = _a.sent();
-                if (!!userModelValidation) return [3 /*break*/, 2];
-                return [2 /*return*/, next(new http_errors_1.default.BadRequest("Operation failed, invalid details provided."))];
-            case 2: return [4 /*yield*/, User_1.default.findOne({
-                    username: userModelValidation.username,
-                })];
-            case 3:
-                isUsernameValid = _a.sent();
-                if (!!isUsernameValid) return [3 /*break*/, 4];
-                res.status(404).json({
-                    message: "Username ".concat(userModelValidation.username, " not valid"),
-                });
                 return [3 /*break*/, 6];
-            case 4: return [4 /*yield*/, processUpdateUser(isUsernameValid._id, userModelValidation)];
-            case 5:
-                updatedUser = _a.sent();
-                if (updatedUser) {
-                    res.status(201).json({
-                        updatedUser: updatedUser,
-                    });
-                }
-                else {
-                    return [2 /*return*/, next(res.status(400).json({
-                            message: "Invalid details provided.",
-                        }))];
-                }
-                _a.label = 6;
-            case 6: return [3 /*break*/, 8];
-            case 7:
-                error_4 = _a.sent();
-                if (error_4 instanceof Error) {
-                    return [2 /*return*/, next(res.status(400).json({
-                            message: "Invalid details provided.",
-                        }))];
-                }
-                next(error_4);
-                return [3 /*break*/, 8];
-            case 8: return [2 /*return*/];
+            case 6: return [2 /*return*/];
         }
     });
 }); };
-exports.updateUser = updateUser;
 var getUser = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var userIdValidation, userDetails, error_5;
+    var userIdValidation, userDetails, error_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 5, , 6]);
+                _a.trys.push([0, 3, , 4]);
                 return [4 /*yield*/, UserValidation_1.UserIdValidation.validateAsync(req.params.userId)];
             case 1:
                 userIdValidation = _a.sent();
-                if (!!userIdValidation) return [3 /*break*/, 2];
-                return [2 /*return*/, next(new http_errors_1.default.BadRequest("Operation failed, invalid details provided."))];
-            case 2: return [4 /*yield*/, User_1.default.findById(userIdValidation)];
-            case 3:
+                if (!userIdValidation) {
+                    res.status(400).json({
+                        message: "Operation failed, invalid details provided.",
+                    });
+                }
+                return [4 /*yield*/, User.findById(userIdValidation)];
+            case 2:
                 userDetails = _a.sent();
+                console.log(userDetails);
                 if (!userDetails) {
                     res.status(404).json({
                         message: "User id not available",
                     });
                 }
-                else {
-                    res.status(200).json({
-                        userDetails: userDetails,
-                    });
+                return [2 /*return*/, res.status(200).json({
+                        message: "User details",
+                        data: userDetails,
+                    })];
+            case 3:
+                error_4 = _a.sent();
+                if (error_4 instanceof Error) {
+                    return [2 /*return*/, res.status(400).json({
+                            message: "Invalid details provided.",
+                        })];
                 }
-                _a.label = 4;
-            case 4: return [3 /*break*/, 6];
-            case 5:
+                next(error_4);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+var updateUser = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var userModelValidation, isUsernameValid, updatedUser, error_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 4, , 5]);
+                return [4 /*yield*/, UserValidation_1.UserValidation.validateAsync(req.body)];
+            case 1:
+                userModelValidation = _a.sent();
+                if (!userModelValidation) {
+                    return [2 /*return*/, next(new http_errors_1.default.BadRequest("Operation failed, invalid details provided."))];
+                }
+                return [4 /*yield*/, User.findOne({
+                        username: userModelValidation.username,
+                    })];
+            case 2:
+                isUsernameValid = _a.sent();
+                if (!isUsernameValid) {
+                    return [2 /*return*/, res.status(404).json({
+                            message: "Username ".concat(userModelValidation.username, " not valid"),
+                        })];
+                }
+                return [4 /*yield*/, processUpdateUser(isUsernameValid._id, userModelValidation)];
+            case 3:
+                updatedUser = _a.sent();
+                if (updatedUser) {
+                    return [2 /*return*/, res.status(201).json({
+                            updatedUser: updatedUser,
+                        })];
+                }
+                return [2 /*return*/, next(res.status(400).json({
+                        message: "Invalid details provided.",
+                    }))];
+            case 4:
                 error_5 = _a.sent();
                 if (error_5 instanceof Error) {
                     return [2 /*return*/, next(res.status(400).json({
@@ -245,9 +222,13 @@ var getUser = function (req, res, next) { return __awaiter(void 0, void 0, void 
                         }))];
                 }
                 next(error_5);
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
-exports.getUser = getUser;
+module.exports = {
+    createUser: createUser,
+    updateUser: updateUser,
+    getUser: getUser,
+};

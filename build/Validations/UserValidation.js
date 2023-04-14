@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserIdValidation = exports.UserValidation = void 0;
 var joi_1 = __importDefault(require("joi"));
 exports.UserValidation = joi_1.default.object({
-    username: joi_1.default.string().email().min(6).max(255).required(),
+    username: joi_1.default.string().email().min(6).max(35).required(),
     name: joi_1.default.string().required(),
     surname: joi_1.default.string().required(),
 });

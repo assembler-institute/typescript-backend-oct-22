@@ -8,12 +8,14 @@ var joi_1 = __importDefault(require("joi"));
 exports.PostValidation = joi_1.default.object({
     title: joi_1.default.string().min(6).required(),
     description: joi_1.default.string().min(6).required(),
+    image: joi_1.default.string().required(),
     vote: joi_1.default.number().required(),
-    user: joi_1.default.string().alphanum().min(6).required(),
 });
 exports.PostIdValidation = joi_1.default.string().alphanum().required();
 exports.UpdatePostValidation = joi_1.default.object({
-    postId: joi_1.default.string().alphanum().required(),
     title: joi_1.default.string().min(6).required(),
     description: joi_1.default.string().min(6).required(),
+    image: joi_1.default.string().required(),
+    vote: joi_1.default.number().required(),
+    postId: joi_1.default.string().alphanum().required(),
 });

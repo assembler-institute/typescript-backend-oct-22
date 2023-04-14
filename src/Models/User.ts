@@ -2,13 +2,15 @@ import mongoose, { Schema } from "mongoose";
 import { Iuser } from "../Types/Iuser";
 const UserSchema: Schema = new Schema(
   {
+    _id: {
+      type: String
+    },
     username: {
       type: String,
       required: true,
       unique: true,
       lowercase: true,
-      min: 6,
-      max: 255,
+      max: 35,
       match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
     },
     name: {
@@ -23,5 +25,7 @@ const UserSchema: Schema = new Schema(
 
   { timestamps: true }
 );
+
 const User = mongoose.model<Iuser>("User", UserSchema);
-export default User;
+
+module.exports = User;

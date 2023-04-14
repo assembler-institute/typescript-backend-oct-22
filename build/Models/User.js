@@ -25,6 +25,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = __importStar(require("mongoose"));
 var UserSchema = new mongoose_1.Schema({
+    _id: {
+        type: String
+    },
     username: {
         type: String,
         required: true,
@@ -44,4 +47,4 @@ var UserSchema = new mongoose_1.Schema({
     },
 }, { timestamps: true });
 var User = mongoose_1.default.model("User", UserSchema);
-exports.default = User;
+module.exports = User;
